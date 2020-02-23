@@ -16,4 +16,10 @@ class World
   def add_at(location)
     @contents.push(location)
   end
+
+  def alive_at?(_location)
+    false
+  end
+
+  def tick; end
 end
