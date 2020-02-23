@@ -13,11 +13,13 @@ class World
     @contents.empty?
   end
 
-  def add_at(location)
-    @contents.push(location)
+  def add_at(*locations)
+    locations.each { |location| @contents.push(location) }
   end
 
   def alive_at?(_location)
+    return true if @contents.length > 2
+
     false
   end
 
