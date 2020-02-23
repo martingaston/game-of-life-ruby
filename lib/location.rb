@@ -6,15 +6,16 @@ class Location
   def initialize(x, y)
     @x = x
     @y = y
+    @neighbours = neighbours(x, y)
   end
 
-  def neighbours
-    remove_negative_neighbours(generate_neighbour_array(@x, @y))
+  def neighbour_of?(location)
+    @neighbours.include? [location.x, location.y]
   end
 
   private
 
-  def generate_neighbour_array(x, y)
+  def neighbours(x, y)
     [
       [x - 1, y + 1],
       [x - 1, y],
@@ -24,10 +25,6 @@ class Location
       [x + 1, y + 1],
       [x + 1, y],
       [x + 1, y - 1]
-    ]
-  end
-
-  def remove_negative_neighbours(neighbour_array)
-    neighbour_array.select { |x, y| x >= 0 && y >= 0 }
+    ].select { |x, y| x >= 0 && y >= 0 }
   end
 end
