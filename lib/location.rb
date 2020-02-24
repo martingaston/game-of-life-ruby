@@ -14,7 +14,15 @@ class Location
   end
 
   def ==(other)
-    x == other.x && y == other.y
+    (self.class == other.class) &&
+      (x == other.x) &&
+      (y == other.y)
+  end
+
+  alias eql? ==
+
+  def hash
+    @x.hash ^ @y.hash # XOR
   end
 
   private
