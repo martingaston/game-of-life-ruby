@@ -22,30 +22,32 @@ class World
   end
 
   def tick
-    updated_cells = @live_cells.select do |location|
-      neighbours = count_neighbours(location)
-      neighbours == 2 || neighbours == 3
-    end
-
-    dead_cells = []
-    @live_cells.each do |location|
-      location.neighbours.each do |neighbour|
-        dead_cells.push(neighbour) unless dead_cells.include?(neighbour)
-      end
-    end
-    dead_cells = dead_cells.map { |x, y| Location.new(x, y) }
-
-    born_cells = dead_cells.select do |location|
-      neighbours = count_neighbours(location)
-      neighbours == 3
-    end
-
-    @live_cells = updated_cells + born_cells
+    @live_cells = check_for_survivors + check_for_births
   end
 
   private
 
   def count_neighbours(location)
     @live_cells.count { |neighbour| location.neighbour_of?(neighbour) }
+  end
+
+  def check_for_survivors
+    @live_cells.select do |location|
+      [2, 3].include?(count_neighbours(location))
+    end
+  end
+
+  def check_for_births
+    dead_cells = []
+    @live_cells.each do |location|
+      location.neighbours.each do |x, y|
+        neighbour = Location.new(x, y)
+        dead_cells.push(neighbour) unless dead_cells.include?(neighbour)
+      end
+    end
+
+    dead_cells.select do |location|
+      count_neighbours(location) == 3
+    end
   end
 end
