@@ -17,11 +17,20 @@ class World
     locations.each { |location| @contents.push(location) }
   end
 
-  def alive_at?(_location)
-    return true if @contents.length > 2
-
-    false
+  def alive_at?(location)
+    @contents.include? location
   end
 
-  def tick; end
+  def tick
+    @contents.each do |location|
+      neighbours = count_neighbours(location)
+      @contents.delete(location) unless neighbours == 2 || neighbours == 3
+    end
+  end
+
+  private
+
+  def count_neighbours(location)
+    @contents.count { |neighbour| location.neighbour_of?(neighbour) }
+  end
 end
