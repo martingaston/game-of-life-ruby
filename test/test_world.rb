@@ -24,6 +24,15 @@ class WorldTest < MiniTest::Test
     assert_equal(false, @world.alive_at?(location))
   end
 
+  def test_world_is_empty_if_all_cells_are_dead_after_tick
+    location = Location.new(1, 1)
+    @world.add_at(location)
+
+    @world.tick
+
+    assert_equal(true, @world.empty?)
+  end
+
   def test_a_cell_with_one_neighbour_does_not_survive_a_tick
     main_cell = Location.new(1, 1)
     first_neighbour_cell = Location.new(0, 1)
