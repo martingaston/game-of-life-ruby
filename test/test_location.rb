@@ -28,4 +28,11 @@ class TestLocation < MiniTest::Test
 
     assert_equal(false, location.neighbour_of?(neighbour))
   end
+
+  def test_a_location_is_equal_to_another_location_with_same_values
+    first_location = Location.new(1, 1)
+    second_location = Location.new(1, 1)
+
+    assert_equal(first_location, second_location)
+  end
 end

@@ -60,8 +60,8 @@ class WorldTest < MiniTest::Test
   def test_a_dead_cell_with_three_neighbours_is_born_after_a_tick
     dead_cell = Location.new(1, 1)
     first_neighbour_cell = Location.new(0, 1)
-    second_neighbour_cell = Location.new(1, 0)
-    third_neighbour_cell = Location.new(2, 1)
+    second_neighbour_cell = Location.new(2, 1)
+    third_neighbour_cell = Location.new(1, 2)
     @world.add_at(first_neighbour_cell, second_neighbour_cell, third_neighbour_cell)
 
     @world.tick
