@@ -18,7 +18,9 @@ class GameOfLife < Gosu::Window
     true
   end
 
-  def update; end
+  def update
+    @world.tick if Gosu.button_down? Gosu::KB_SPACE
+  end
 
   def draw
     draw_background
