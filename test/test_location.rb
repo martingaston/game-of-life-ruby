@@ -2,6 +2,7 @@
 
 require 'minitest/autorun'
 require 'location'
+require 'config'
 
 class TestLocation < MiniTest::Test
   def check_all_neighbours(location, neighbours)
@@ -20,6 +21,14 @@ class TestLocation < MiniTest::Test
     ]
 
     check_all_neighbours(location, neighbouring_locations)
+  end
+
+  def test_a_location_must_be_within_bounds
+    skip 'implement'
+  end
+
+  def test_a_location_neighbours_are_within_bounds
+    skip 'implement'
   end
 
   def test_a_location_can_detect_if_a_location_is_not_neighbouring

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'config'
+
 class Location
   attr_reader :x, :y, :neighbours
 
@@ -37,6 +39,6 @@ class Location
       [x + 1, y + 1],
       [x + 1, y],
       [x + 1, y - 1]
-    ].select { |x, y| x >= 0 && y >= 0 }
+    ].select { |x, y| x >= 0 && y >= 0 && x <= Config::CELLS_WIDTH && y <= Config::CELLS_HEIGHT }
   end
 end

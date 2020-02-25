@@ -2,14 +2,11 @@
 
 require 'gosu'
 require_relative 'colours'
+require_relative 'config'
 
 class GameOfLife < Gosu::Window
-  WIDTH = 1024
-  HEIGHT = 768
-  CELL_SIZE = 8
-
   def initialize
-    super WIDTH, HEIGHT
+    super Config::WIDTH, Config::HEIGHT
     self.caption = 'Game Of Life'
   end
 
@@ -22,8 +19,8 @@ class GameOfLife < Gosu::Window
   def draw
     draw_background
 
-    (0..HEIGHT / CELL_SIZE).each do |y|
-      (0..WIDTH / CELL_SIZE).each do |x|
+    (0..Config::HEIGHT / Config::CELL_SIZE).each do |y|
+      (0..Config::WIDTH / Config::CELL_SIZE).each do |x|
         draw_cell(x, y)
       end
     end
@@ -34,7 +31,10 @@ class GameOfLife < Gosu::Window
   end
 
   def draw_cell(x, y)
-    Gosu.draw_rect x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1, Colours::DEAD_CELL
+    size = Config::CELL_SIZE - 1
+    start_x = x * Config::CELL_SIZE
+    start_y = y * Config::CELL_SIZE
+    Gosu.draw_rect start_x, start_y, size, size, Colours::DEAD_CELL
   end
 end
 
