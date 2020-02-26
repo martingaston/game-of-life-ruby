@@ -2,7 +2,7 @@
 
 class World
   def initialize
-    @live_cells = []
+    @cells = Hash.new(:dead)
   end
 
   def self.empty
@@ -10,44 +10,47 @@ class World
   end
 
   def empty?
-    @live_cells.empty?
+    @cells.empty?
   end
 
   def add_at(*locations)
-    locations.each { |location| @live_cells.push(location) }
+    locations.each do |location|
+      @cells[location] = :alive
+      location.neighbours.each { |x, y| @cells[Location.new(x, y)] = :dead unless @cells.has_key?(Location.new(x, y)) }
+    end
   end
 
   def alive_at?(location)
-    @live_cells.include? location
+    @cells[location] == :alive
   end
 
   def tick
-    @live_cells = check_for_survivors + check_for_births
+    check_for_survivors
   end
 
   private
 
   def count_neighbours(location)
-    @live_cells.count { |neighbour| location.neighbour_of?(neighbour) }
+    location.neighbours.count { |x, y| @cells[Location.new(x, y)] == :alive }
   end
 
   def check_for_survivors
-    @live_cells.select do |location|
-      [2, 3].include?(count_neighbours(location))
-    end
-  end
+    @new_cells = {}
 
-  def check_for_births
-    dead_cells = []
-    @live_cells.each do |location|
-      location.neighbours.each do |x, y|
-        neighbour = Location.new(x, y)
-        dead_cells.push(neighbour) unless dead_cells.include?(neighbour)
+    @cells.each do |location, status|
+      if @cells[location] == :alive
+        if [2, 3].include?(count_neighbours(location))
+          @new_cells[location] = :alive
+          location.neighbours.each { |x, y| @new_cells[Location.new(x, y)] = :dead unless @new_cells.has_key?(Location.new(x, y)) }
+        end
+      elsif @cells[location] == :dead
+        if count_neighbours(location) == 3
+          @new_cells[location] = :alive
+          location.neighbours.each { |x, y| @new_cells[Location.new(x, y)] = :dead unless @new_cells.has_key?(Location.new(x, y)) }
+        end
       end
     end
 
-    dead_cells.select do |location|
-      count_neighbours(location) == 3
-    end
+    @cells = @new_cells
   end
 end
