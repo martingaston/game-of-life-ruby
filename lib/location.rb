@@ -16,7 +16,6 @@ class Location
   end
 
   def ==(other)
-    (self.class == other.class) &&
       (x == other.x) &&
       (y == other.y)
   end
