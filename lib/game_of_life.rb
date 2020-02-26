@@ -11,6 +11,14 @@ class GameOfLife < Gosu::Window
     super Config::WIDTH, Config::HEIGHT
     self.caption = 'Game Of Life'
     @world = World.empty
+    @milliseconds_since_tick = 0
+  end
+
+  def since_last_tick
+    now = Gosu.milliseconds
+    update_interval = (now - (@last_update ||= 0)).to_f
+    @last_update = now
+    @milliseconds_since_tick += update_interval
   end
 
   def needs_cursor?
@@ -18,17 +26,21 @@ class GameOfLife < Gosu::Window
   end
 
   def update
-    @world.tick if Gosu.button_down? Gosu::KB_SPACE
-    @selected_x, @selected_y = get_mouseover_cell
+    since_last_tick
 
+    @selected_x, @selected_y = get_mouseover_cell
     if Gosu.button_down? Gosu::MS_LEFT
       @world.add_at(Location.new(@selected_x, @selected_y))
+    end
+
+    if @milliseconds_since_tick >= Config::TICK_SPEED_MS && Gosu.button_down?(Gosu::KB_SPACE)
+      @world.tick
+      @milliseconds_since_tick = 0
     end
   end
 
   def draw
     draw_background
-    puts Gosu.fps
 
     (0..Config::HEIGHT / Config::CELL_SIZE).each do |y|
       (0..Config::WIDTH / Config::CELL_SIZE).each do |x|
