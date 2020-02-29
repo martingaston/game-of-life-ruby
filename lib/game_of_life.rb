@@ -73,7 +73,15 @@ class GameOfLife < Gosu::Window
     location_x = (mouse_x / Config::CELL_SIZE).to_i
     location_y = (mouse_y / Config::CELL_SIZE).to_i
 
-    [location_x, location_y]
+    [clamp_horizontal(location_x), clamp_vertical(location_y)]
+  end
+
+  def clamp_horizontal(x)
+    x.clamp(0, Config::CELLS_WIDTH)
+  end
+
+  def clamp_vertical(y)
+    y.clamp(0, Config::CELLS_HEIGHT)
   end
 
   def get_cell_colour(x, y)
