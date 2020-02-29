@@ -5,6 +5,7 @@ require_relative 'colours'
 require_relative 'config'
 require_relative 'world'
 require_relative 'location'
+require_relative 'timer'
 
 class GameOfLife < Gosu::Window
   def initialize
@@ -12,13 +13,7 @@ class GameOfLife < Gosu::Window
     self.caption = 'Game Of Life'
     @world = World.empty
     @milliseconds_since_tick = 0
-  end
-
-  def since_last_tick
-    now = Gosu.milliseconds
-    update_interval = (now - (@last_update ||= 0)).to_f
-    @last_update = now
-    @milliseconds_since_tick += update_interval
+    @timer = Timer.zero
   end
 
   def needs_cursor?
@@ -26,17 +21,19 @@ class GameOfLife < Gosu::Window
   end
 
   def update
-    since_last_tick
-
     @selected_x, @selected_y = get_mouseover_cell
     if Gosu.button_down? Gosu::MS_LEFT
       @world.add_at(Location.new(@selected_x, @selected_y))
     end
 
-    if @milliseconds_since_tick >= Config::TICK_SPEED_MS && Gosu.button_down?(Gosu::KB_SPACE)
+    if should_tick?
       @world.tick
-      @milliseconds_since_tick = 0
+      @timer.reset_to(Gosu.milliseconds)
     end
+  end
+
+  def should_tick?
+    @timer.should_tick?(Gosu.milliseconds) && Gosu.button_down?(Gosu::KB_SPACE)
   end
 
   def draw
