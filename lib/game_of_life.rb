@@ -12,7 +12,6 @@ class GameOfLife < Gosu::Window
     super Config::WIDTH, Config::HEIGHT
     self.caption = 'Game Of Life'
     @world = World.empty
-    @milliseconds_since_tick = 0
     @timer = Timer.zero
   end
 
@@ -26,10 +25,10 @@ class GameOfLife < Gosu::Window
       @world.add_at(Location.new(@selected_x, @selected_y))
     end
 
-    if should_tick?
-      @world.tick
-      @timer.reset_to(Gosu.milliseconds)
-    end
+    return unless should_tick?
+
+    @world.tick
+    @timer.reset_to(Gosu.milliseconds)
   end
 
   def should_tick?
@@ -38,35 +37,30 @@ class GameOfLife < Gosu::Window
 
   def draw
     draw_background
-
-    (0..Config::HEIGHT / Config::CELL_SIZE).each do |y|
-      (0..Config::WIDTH / Config::CELL_SIZE).each do |x|
-        if [x, y] == [@selected_x, @selected_y]
-          draw_selected_cell(x, y)
-        else
-          draw_cell(x, y)
-        end
-      end
-    end
+    populate
   end
 
   def draw_background
     Gosu.draw_rect 0, 0, width, height, Colours::BLACK
   end
 
-  def draw_cell(x, y)
-    size = Config::CELL_SIZE - 1
-    start_x = x * Config::CELL_SIZE
-    start_y = y * Config::CELL_SIZE
-    colour = get_cell_colour(x, y)
-    Gosu.draw_rect start_x, start_y, size, size, colour
+  def populate
+    (0..CELLS_HEIGHT).each do |y|
+      (0..CELLS_WIDTH).each do |x|
+        if [x, y] == [@selected_x, @selected_y]
+          draw_cell(x, y, Colours::WHITE)
+        else
+          draw_cell(x, y, get_cell_colour(x, y))
+        end
+      end
+    end
   end
 
-  def draw_selected_cell(x, y)
+  def draw_cell(x, y, colour)
     size = Config::CELL_SIZE - 1
     start_x = x * Config::CELL_SIZE
     start_y = y * Config::CELL_SIZE
-    Gosu.draw_rect start_x, start_y, size, size, Colours::WHITE
+    Gosu.draw_rect start_x, start_y, size, size, colour
   end
 
   def get_mouseover_cell
